@@ -69,7 +69,9 @@ if __name__ == "__main__":
 	params['file_region']='generic_start_eas50_aabbw'
 	params['file_ghg']='ghg_defaults'
 	params['restart_upload_month']=12
-	
+        # for new region with triffid, should always be a certain times of 360, so 360, 720, 1080, etc., if do not want to run triffid
+	# set triffid_period to be longer than your run period.
+	params['triffid_period']=720	
 
 	# Set up the xml doc - Remember to check/alter the header info as required
         impl = getDOMImplementation()
