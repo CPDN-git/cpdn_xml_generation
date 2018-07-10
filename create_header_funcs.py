@@ -39,7 +39,7 @@ def get_upload_info(upload_loc,vn="2.2"):
 def set_main_site():
 	SiteInfo.download_url="http://download.cpdn.org/download/"
 	SiteInfo.download_dir="/storage/download/"
-	SiteInfo.project_dir="/var/www/boinc/projects/cpdnboinc"
+	SiteInfo.project_dir="/storage/www/cpdnboinc"
 
 def set_dev_site():
 	SiteInfo.download_url="http://vorvadoss.oerc.ox.ac.uk/cpdnboinc_dev/download"
