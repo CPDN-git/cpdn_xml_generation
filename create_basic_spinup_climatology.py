@@ -115,8 +115,8 @@ if __name__ == "__main__":
 #		decade=year/10*10
 		params['file_ozone']=ozone_files[decade]
 		params['file_so2dms']=so2dms_files[decade]
-		params['file_sst']='final_ancil_2year_OSTIA_sst_'+str(year)+'-12-01_'+str(year+2)+'-12-30'
-		params['file_sice']='final_ancil_2year_OSTIA_ice_'+str(year)+'-12-01_'+str(year+2)+'-12-30'
+		params['file_sst']='ALLclim_ancil_14months_OSTIA_sst_'+str(year)+'-12-01_'+str(year+2)+'-01-30'
+		params['file_sice']='ALLclim_ancil_14months_OSTIA_ice_'+str(year)+'-12-01_'+str(year+2)+'-01-30'
 
 		end_umid=CreatePertExpts2(xml_doc,params,pert_start,pert_end,anc)
 	
