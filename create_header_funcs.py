@@ -34,7 +34,7 @@ def get_upload_info(upload_loc,vn="2.2"):
 		"upload12":("upload12","http://upload12.cpdn.org/cgi-bin/file_upload_handler")}
 	
 	upload_handler=upload_info_dict[upload_loc][1]
-	upload_template="upload_templates/"+upload_info_dict[upload_loc][0]+vn+"/result_template_"+upload_loc
+	upload_template="upload_templates/"+upload_info_dict[upload_loc][0]+"/result_template_"+upload_loc
 	
 	return upload_handler,upload_template
 
