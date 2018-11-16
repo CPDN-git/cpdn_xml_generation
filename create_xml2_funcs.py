@@ -59,10 +59,9 @@ def GenAM4PertList(res, include_zero_pert=False):
 		else:
 			year='2003'
 
-                for dd in range(1,30):
-                        for sc in range(0,5):
-                                pert_str = pert_prefix + year + "%02d" % mm + "%02d_" % dd + \
-                                pert_list.append(pert_str)
+                for dd in range(0,59):
+                	pert_str = pert_prefix + year + "%02d" % mm + "%06d_" % dd + \
+                        pert_list.append(pert_str)
 
         # shuffle the list so it has a random order of perturbations
         random.shuffle(pert_list)
