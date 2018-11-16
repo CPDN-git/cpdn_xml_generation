@@ -48,6 +48,31 @@ def GenPertList(include_zero_pert=False):
 
 	return pert_list
 
+def GenAM4PertList(res, include_zero_pert=False):
+        # generate a list of possible perturbation files
+        pert_list = []
+        pert_prefix = "ic_"+res+"_"
+
+        for mm in range(1,13):
+		if mm == 12:
+			year='2002'
+		else:
+			year='2003'
+
+                for dd in range(1,30):
+                        for sc in range(0,5):
+                                pert_str = pert_prefix + year + "%02d" % mm + "%02d_" % dd + \
+                                pert_list.append(pert_str)
+
+        # shuffle the list so it has a random order of perturbations
+        random.shuffle(pert_list)
+        # add the zero perturbation to the front of the list
+        if include_zero_pert:
+                pert_list.insert(0, "icN144_testzero")
+
+        return pert_list
+
+
 ######################
 
 # Take dictionary of parameters and add experiment to the xml
@@ -200,9 +225,12 @@ def CreatePertExpts(xml_doc,params_dict,restarts,pert_start,pert_end,anc):
 
 # Adds experiments for a given dictionary of parameters
 # and initial condition perturbations
-def CreatePertExpts2(xml_doc,params_dict,pert_start,pert_end,anc):	
+def CreatePertExpts2(xml_doc,params_dict,pert_start,pert_end,anc, res = 'N96'):	
 	# Create list of perturbations
-	pert_list = GenPertList()[pert_start:pert_end] 
+	if res == 'N96':
+		pert_list = GenPertList()[pert_start:pert_end] 
+	else:
+		pert_list = GenAM4PertList(res)[pert_start:pert_end]
 	
 	for pert in pert_list:
 		params_dict['file_pert']=pert
