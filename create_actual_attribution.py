@@ -16,7 +16,6 @@ random.seed(1)  # ensure reproducibility!
 from create_xml2_funcs import CreatePertExpts,AddBatchDict,remove_whitespace_nodes
 from create_header_funcs import *
 
-models=['CCSM4','CanESM2', 'CNRM-CM5', 'CSIRO-Mk3', 'GFDL-CM3', 'GISS-E2-H', 'GISS-E2-R', 'HadGEM2-ES', 'IPSL-CM5A-LR', 'IPSL-CM5A-MR', 'MIROC-ESM','MMM','NorESM1-M']
 
 class Vars:
         #input command line variables
@@ -73,7 +72,7 @@ if __name__ == "__main__":
 	params['file_sulphox']='oxi.addfa'
 	params['file_atmos']='xhjlya.start.0000.360.new'
 	params['file_region']='generic_start_eas50_aabbw'
-	params['file_ghg']='file_ghg_1850'
+	params['file_ghg']='ghg_defaults'
 	params['restart_upload_month']=4
 
 	# Set up doc
@@ -92,24 +91,24 @@ if __name__ == "__main__":
 
 	# Set up number of perturbations 
 	pert_start=0
-	pert_end =8
+	pert_end =70
 	
 	first_year=2016
 	last_year=2016
 
 
 	# Set start umid		
-	start_umid = "n000"
+	start_umid = "a000"
 	anc = ANC()
 	anc.Start(start_umid) # next set
 
-	restarts_list='batch_lists/batch_702_restarts.csv'
+	restarts_list='batch_lists/batch_701_restarts.csv'
 
 	print "Creating experiments... "
 
 	# Possible ozone/so2dms files (depending on decade)
-	ozone_files={1980:'ozone_preind_N96_1879_0000Pv5',1990:'ozone_preind_N96_1879_0000Pv5',2000:'ozone_preind_N96_1879_0000Pv5',2010:'ozone_preind_N96_1879_0000Pv5'}
-	so2dms_files={1980:'so2dms_prei_N96_1855_0000P',1990:'so2dms_prei_N96_1855_0000P',2000:'so2dms_prei_N96_1855_0000P',2010:'so2dms_prei_N96_1855_0000P'}
+	ozone_files={2010:'ozone_rcp45_N96_2009_2020v2'}
+	so2dms_files={2010:'so2dms_Ev5a_baseCLE_N96_2009_2020'}
 	tech_info_details=""
 	model_start_umid=start_umid
 	for year in range(first_year,last_year+1):
@@ -118,25 +117,24 @@ if __name__ == "__main__":
 #		decade=year/10*10
 		params['file_ozone']=ozone_files[decade]
 		params['file_so2dms']=so2dms_files[decade]
-		params['file_sice']='OSICE_natural_0000P'
+		params['file_sice']='ALLclim_ancil_14months_OSTIA_ice_'+str(year)+'-12-01_'+str(year+2)+'-01-30'
 		#tech_info_details += " Year "+str(year)+": "
-		for model in models:
-			params['file_sst']='NATclim_ancil_14months_OSTIA_sst_'+model+'_'+str(year)+'-12-01_'+str(year+2)+'-01-30'
-			i=0
-			sumid=model_start_umid
-                	for restarts in open(restarts_list):
-                        	if i>=75: # Take only 75 restarts per year
-                                	break
-                        	end_umid=CreatePertExpts(xml_doc,params,restarts,pert_start,pert_end,anc)
-                        	i=i+1
-			tech_info_details += ", "+model+":"+sumid+"-"+end_umid
-			model_start_umid=end_umid
+		params['file_sst']='ALLclim_ancil_14months_OSTIA_sst_'+str(year)+'-12-01_'+str(year+2)+'-01-30'
+		i=0
+                for restarts in open(restarts_list):
+                        if i>=75: # Take only 75 restarts per year
+                                break
+        #                	if restarts.split(',')[0].find('_'+str(year)+'-')==-1:
+        #                        	continue # The restart isn't for this year. 
+                        end_umid=CreatePertExpts(xml_doc,params,restarts,pert_start,pert_end,anc)
+                        i=i+1
+		
 	# Add in batch tags:
 	batch={}
-	batch['name']="WAH2 East Asia 50km Natural 2017"
-	batch['desc']="2nd generation WAH2 East Asia 50km Naturals for 2017 (starting dec 2016)"
+	batch['name']="WAH2 East Asia 50km Actual 2017"
+	batch['desc']="2nd generation WAH2 East Asia 50km Actual for 2017 (starting dec 2016)"
 	batch['owner']="Sarah Sparrow <sarah.sparrow@oerc.ox.ac.uk>"
-	batch['tech_info']="Restarts from batch 702, 13 CMIP5 Natural only patterns"+tech_info_details
+	batch['tech_info']="Restarts from batch 701, OSTIA SSTs"
 	batch['proj']='LOTUS'
 	batch['first_start_year']=first_year
 	batch['last_start_year']=last_year
@@ -146,7 +144,7 @@ if __name__ == "__main__":
 	
 	######## Write out the file ########
 	
-	xml_out='wu_wah2_eas50_natural_2gen_2017_' +\
+	xml_out='wu_wah2_eas50_actual_2gen_2017_' +\
 			  start_umid + '_' + end_umid + '.xml'
         if not os.path.exists('xmls'):
                     os.makedirs('xmls')
