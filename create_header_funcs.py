@@ -61,12 +61,14 @@ def get_namelist_dir(app_config):
 		namelist_dir="HadCM3N"
 	elif app=="hadcm3s":
 		namelist_dir="HadCM3S"
+	elif app=="hadam4":
+		namelist_dir="HadAM4"
 	else:
 		namelist_dir=app
 	
 	return namelist_dir
 
-def make_header(xml_doc,site,upload_loc,app_config,stash_files,vn="2.2"):
+def make_header(xml_doc,site,upload_loc,app_config,stash_files,pack_files="",vn="2.2"):
 	# Add xml header elements
 	root = xml_doc.documentElement
 	root.appendChild(xml_doc.createComment("App configuration settings i.e. model, region, triffid etc"))
@@ -119,3 +121,13 @@ def make_header(xml_doc,site,upload_loc,app_config,stash_files,vn="2.2"):
 		node=xml_doc.createElement(stash_tag)
         	root.appendChild(node)
 		node.appendChild(xml_doc.createTextNode(stash_files[i]))
+
+	# Add stash packing file 
+	app=app_config.split("_")[1]
+	if app=="hadam4":
+		root.appendChild(xml_doc.createComment("Stash packing to use in the simulations"))
+        	pack_tags=["global_pack_file","region_pack_file"]
+        	for i,pack_tag in enumerate (pack_tags[0:len(pack_files)]):
+                	node=xml_doc.createElement(pack_tag)
+                	root.appendChild(node)
+                node.appendChild(xml_doc.createTextNode(stash_files[i]))
