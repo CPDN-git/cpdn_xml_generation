@@ -202,7 +202,7 @@ def AddSubBatch(xml_doc,sb_id,sb_start,sb_stop,sb_desc):
 
 # Adds experiments for a given list of restart dumps 
 # and initial condition perturbations
-def CreatePertExpts(xml_doc,params_dict,restarts,pert_start,pert_end,anc):	
+def CreatePertExpts(xml_doc,params_dict,restarts,pert_start,pert_end,anc, res = 'N96'):	
 	# restart dumps:
 	tmp=restarts.split(',')
 	fatmos=tmp[0].strip()
@@ -210,8 +210,12 @@ def CreatePertExpts(xml_doc,params_dict,restarts,pert_start,pert_end,anc):
 	if len(tmp)>1:
 		fregion=tmp[1].strip()
 		params_dict['file_region']=fregion
-	pert_list = GenPertList()[pert_start:pert_end] 
-	
+	# Create list of perturbations
+        if res == 'N96':
+                pert_list = GenPertList()[pert_start:pert_end] 
+        else:
+                pert_list = GenAM4PertList(res)[pert_start:pert_end]
+
 	for i,pert in enumerate(pert_list):
 		params_dict['file_pert']=pert
 		params_dict['exptid']=anc.Get()
