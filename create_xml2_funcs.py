@@ -59,7 +59,7 @@ def GenAM4PertList(res, include_zero_pert=False):
 		else:
 			year='2003'
 
-                for dd in range(0,59):
+                for dd in range(0,58):
                 	pert_str = pert_prefix + year + "%02d" % mm + "_%06d" % dd 
                         pert_list.append(pert_str)
 
