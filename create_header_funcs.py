@@ -44,14 +44,14 @@ def set_main_site():
 	SiteInfo.project_dir="/storage/www/cpdnboinc"
 
 def set_dev_site():
-	SiteInfo.download_url="http://vorvadoss.oerc.ox.ac.uk/cpdnboinc_dev/download"
-        SiteInfo.download_dir="/storage/boinc/projects/cpdnboinc_dev/download"
-        SiteInfo.project_dir="/var/www/boinc/projects/cpdnboinc_dev"
+	SiteInfo.download_url="http://dev.cpdn.org/download"
+        SiteInfo.download_dir="/storage/www/cpdnboinc_dev/download"
+        SiteInfo.project_dir="/storage/www/cpdnboinc_dev"
 
 def set_alpha_site():
-        SiteInfo.download_url="http://vorvadoss.oerc.ox.ac.uk/cpdnboinc_alpha/download"
-        SiteInfo.download_dir="/storage/boinc/projects/cpdnboinc_alpha/download"
-        SiteInfo.project_dir="/var/www/boinc/projects/cpdnboinc_alpha"
+        SiteInfo.download_url="http://alpha.cpdn.org/download"
+        SiteInfo.download_dir="/storage/www/cpdnboinc_alpha/download"
+        SiteInfo.project_dir="/storage/www/cpdnboinc_alpha"
 
 def get_namelist_dir(app_config):
 	app=app_config.split("_")[1]
