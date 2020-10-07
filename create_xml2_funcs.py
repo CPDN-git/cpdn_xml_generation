@@ -5,7 +5,7 @@
 # Purpose : create the xml template for the HadAM3P experiment
 
 import xml.dom.minidom as dom
-from StringIO import StringIO
+from io import StringIO
 from ANC import *
 import random
 random.seed(1)	# ensure reproducibility!
@@ -48,28 +48,35 @@ def GenPertList(include_zero_pert=False):
 
 	return pert_list
 
+
 def GenAM4PertList(res, include_zero_pert=False):
-        # generate a list of possible perturbation files
-        pert_list = []
-        pert_prefix = "ic_"+res+"_"
+    # generate a list of possible perturbation files
+    pert_list = []
+    pert_prefix = "ic_"+res+"_"
 
-        for mm in range(1,13):
-		if mm == 12:
-			year='2002'
-		else:
-			year='2003'
+    for mm in range(1,13):
+        if mm == 12:
+            year='2002'
+        else:
+            year='2003'
+    
+        for dd in range(0,58):
+            if res=='N216':
+                pert_str = pert_prefix + year + "_%02d" % mm + "_%06d" % dd + '.nc'
+            else:
+                pert_str = pert_prefix + year + "%02d" % mm + "_%06d" % dd 
 
-                for dd in range(0,58):
-                	pert_str = pert_prefix + year + "%02d" % mm + "_%06d" % dd 
-                        pert_list.append(pert_str)
+            pert_list.append(pert_str)
 
-        # shuffle the list so it has a random order of perturbations
-        random.shuffle(pert_list)
-        # add the zero perturbation to the front of the list
-        if include_zero_pert:
-                pert_list.insert(0, "icN144_testzero")
+    # shuffle the list so it has a random order of perturbations
+    random.seed(1)    # PW - added this here so that work units for N216 model for different regions could be made to have the same initial conditions perturbations applied.
+    random.shuffle(pert_list)
+    # add the zero perturbation to the front of the list
+    if include_zero_pert:
+        pert_list.insert(0, "icN144_testzero")
 
-        return pert_list
+    return pert_list
+
 
 
 ######################
@@ -94,7 +101,7 @@ def CreateExperiment(xml_doc, params_dict):
 	
 
 	# Loop over parameters and add
-	for param,value in sorted(params_dict.iteritems()):
+	for param,value in sorted(params_dict.items()):
 		whitespace=xml_doc.createTextNode('\n\t\t')
 		parm_node.appendChild(whitespace)
 		node=xml_doc.createElement(param)
@@ -136,7 +143,7 @@ def AddBatch(xml_doc,batch_name,batch_desc,batch_owner,syear):
 def AddBatchDict(xml_doc,batch):
 	root = xml_doc.documentElement
 
-	for key,val in sorted(batch.iteritems()):
+	for key,val in sorted(batch.items()):
 		whitespace=xml_doc.createTextNode('\n\t')
 		root.appendChild(whitespace)
 		node=xml_doc.createElement('batch_'+key)
@@ -176,26 +183,26 @@ def AddExistingBatch(xml_doc,batchid,batch_name,batch_desc,batch_owner,syear):
 
 # Adds sub batch tags to xml file
 def AddSubBatch(xml_doc,sb_id,sb_start,sb_stop,sb_desc):
-	print 'Added Sub Batch',sb_id
-	root = xml_doc.documentElement
-	sb_node = xml_doc.createElement('sub_batch')
-	root.appendChild(sb_node)
+    print(('Added Sub Batch',sb_id))
+    root = xml_doc.documentElement
+    sb_node = xml_doc.createElement('sub_batch')
+    root.appendChild(sb_node)
 
-	node=xml_doc.createElement('sub_batch_id')
-	sb_node.appendChild(node)
-	node.appendChild(xml_doc.createTextNode(str(sb_id)))
+    node=xml_doc.createElement('sub_batch_id')
+    sb_node.appendChild(node)
+    node.appendChild(xml_doc.createTextNode(str(sb_id)))
 	
-	node=xml_doc.createElement('umid_start')
-	sb_node.appendChild(node)
-	node.appendChild(xml_doc.createTextNode(sb_start))
+    node=xml_doc.createElement('umid_start')
+    sb_node.appendChild(node)
+    node.appendChild(xml_doc.createTextNode(sb_start))
 	
-	node=xml_doc.createElement('umid_stop')
-	sb_node.appendChild(node)
-	node.appendChild(xml_doc.createTextNode(sb_stop))
+    node=xml_doc.createElement('umid_stop')
+    sb_node.appendChild(node)
+    node.appendChild(xml_doc.createTextNode(sb_stop))
 	
-	node=xml_doc.createElement('sub_batch_desc')
-	sb_node.appendChild(node)
-	node.appendChild(xml_doc.createTextNode(sb_desc))
+    node=xml_doc.createElement('sub_batch_desc')
+    sb_node.appendChild(node)
+    node.appendChild(xml_doc.createTextNode(sb_desc))
 
 ##########################
 
@@ -203,25 +210,25 @@ def AddSubBatch(xml_doc,sb_id,sb_start,sb_stop,sb_desc):
 # Adds experiments for a given list of restart dumps 
 # and initial condition perturbations
 def CreatePertExpts(xml_doc,params_dict,restarts,pert_start,pert_end,anc, res = 'N96'):	
-	# restart dumps:
-	tmp=restarts.split(',')
-	fatmos=tmp[0].strip()
-	params_dict['file_atmos']=fatmos
-	if len(tmp)>1:
-		fregion=tmp[1].strip()
-		params_dict['file_region']=fregion
+    # restart dumps:
+    tmp=restarts.split(',')
+    fatmos=tmp[0].strip()
+    params_dict['file_atmos']=fatmos
+    if len(tmp)>1:
+        fregion=tmp[1].strip()
+        params_dict['file_region']=fregion
 	# Create list of perturbations
         if res == 'N96':
-                pert_list = GenPertList()[pert_start:pert_end] 
+            pert_list = GenPertList()[pert_start:pert_end] 
         else:
-                pert_list = GenAM4PertList(res)[pert_start:pert_end]
+            pert_list = GenAM4PertList(res)[pert_start:pert_end]
 
-	for i,pert in enumerate(pert_list):
-		params_dict['file_pert']=pert
-		params_dict['exptid']=anc.Get()
-		CreateExperiment(xml_doc,params_dict)
-		anc.Next()
-	return params_dict['exptid'] # Last added umid
+    for i,pert in enumerate(pert_list):
+        params_dict['file_pert']=pert
+        params_dict['exptid']=anc.Get()
+        CreateExperiment(xml_doc,params_dict)
+        anc.Next()
+    return params_dict['exptid'] # Last added umid
 
 
 ##########################
