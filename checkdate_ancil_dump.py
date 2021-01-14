@@ -58,5 +58,5 @@ if __name__ == "__main__":
 		if checkdate(fatmos) and checkdate(fregion):
 			fgood.write(line)
 		else:
-			print 'bad file:',atmos.strip(' ,'),region.strip(' ,')
+			print('bad file:',atmos.strip(' ,'),region.strip(' ,'))
 	fgood.close()
