@@ -125,7 +125,7 @@ def extract_restarts():
                             os.rename(Vars.out_dir+old_file,Vars.out_dir+new_file)
                         except:
                             if os.path.exists(Vars.out_dir+old_file):
-            #                    os.remove(Vars.out_dir+old_file)
+                                os.remove(Vars.out_dir+old_file)
                                 pass
                 # Create the line for the csv file information
                 line.append(new_file)
