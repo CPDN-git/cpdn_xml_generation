@@ -54,19 +54,21 @@ def set_alpha_site():
     SiteInfo.project_dir="/storage/www/cpdnboinc_alpha"
 
 def get_namelist_dir(app_config):
-	app=app_config.split("_")[1]
-	if app=="hadam3p" or app=="hadam3pm2":
-		namelist_dir="Weather_At_Home"
-	elif app=="hadcm3n":
-		namelist_dir="HadCM3N"
-	elif app=="hadcm3s":
-		namelist_dir="HadCM3S"
-	elif app=="hadam4":
-		namelist_dir="HadAM4"
-	else:
-		namelist_dir=app
+    app=app_config.split("_")[1]
+    if app=="hadam3p" or app=="hadam3pm2":
+        namelist_dir="Weather_At_Home"
+    elif app=="hadcm3n":
+        namelist_dir="HadCM3N"
+    elif app=="hadcm3s":
+        namelist_dir="HadCM3S"
+    elif app=="hadam4":
+        namelist_dir="HadAM4"
+    elif app=="hadsm4":
+        namelist_dir="HadSM4"
+    else:
+        namelist_dir=app
 	
-	return namelist_dir
+    return namelist_dir
 
 def make_header(xml_doc,site,upload_loc,app_config,stash_files,pack_files=["global_pack_data_docile.xml","regional_pack_data.xml"],vn="2.2"):
     # Add xml header elements
