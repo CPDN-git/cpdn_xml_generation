@@ -49,6 +49,23 @@ def GenPertList(include_zero_pert=False):
 	return pert_list
 
 
+def GenCM3PertList(include_zero_pert=False):
+    # generate a list of possible perturbation files
+    pert_list = []
+    pert_base = "potential_temp_perturbation_"
+    
+    for i in range(1,75):
+        pert_str = pert_base + str(i) + "_22_05.nc"
+        pert_list.append(pert_str)
+                                    
+    # shuffle the list so it has a random order of perturbations
+    random.shuffle(pert_list)       
+    # add the zero perturbation to the front of the list
+    if include_zero_pert:           
+        pert_list.insert(0, "ic00000000_10_N48")
+                                    
+    return pert_list     
+
 def GenAM4PertList(res, include_zero_pert=False):
     # generate a list of possible perturbation files
     pert_list = []
@@ -237,18 +254,42 @@ def CreatePertExpts(xml_doc,params_dict,restarts,pert_start,pert_end,anc, res = 
 # and initial condition perturbations
 def CreatePertExpts2(xml_doc,params_dict,pert_start,pert_end,anc, res = 'N96'):	
 	# Create list of perturbations
-	if res == 'N96':
-		pert_list = GenPertList()[pert_start:pert_end] 
-	else:
-		pert_list = GenAM4PertList(res)[pert_start:pert_end]
+    if res == 'N96':
+        pert_list = GenPertList()[pert_start:pert_end] 
+    elif res == 'N48':
+        pert_list = GenCM3PertList()[pert_start:pert_end]
+    else:
+        pert_list = GenAM4PertList(res)[pert_start:pert_end]
 	
-	for pert in pert_list:
-		params_dict['file_pert']=pert
-		params_dict['exptid']=anc.Get()
-		CreateExperiment(xml_doc,params_dict)
-		anc.Next()
-	return params_dict['exptid'] # Last added umid
-	
+    for pert in pert_list:
+        params_dict['file_pert']=pert
+        params_dict['exptid']=anc.Get()
+        CreateExperiment(xml_doc,params_dict)
+        anc.Next()
+    return params_dict['exptid'] # Last added umid
+
+##########################
+
+# Adds experiments for a given dictionary of parameters
+# and initial condition perturbations
+def CreatePertExpts2Tag(xml_doc,params_dict,pert_start,pert_end,anc,tag_dict, tag, res = 'N96'):
+    # Create list of perturbations
+    if res == 'N96':
+        pert_list = GenPertList()[pert_start:pert_end]
+    elif res == 'N48':
+        pert_list = GenCM3PertList()[pert_start:pert_end]
+    else:
+        pert_list = GenAM4PertList(res)[pert_start:pert_end]
+
+    for pert in pert_list:
+        params_dict['file_pert']=pert
+        params_dict['exptid']=anc.Get()
+        tag_dict[params_dict['exptid']]=tag
+        CreateExperiment(xml_doc,params_dict)
+        anc.Next()
+    return params_dict['exptid'],tag_dict # Last added umid
+
+
 	
 #############################
 	
